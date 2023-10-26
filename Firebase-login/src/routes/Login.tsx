@@ -12,12 +12,13 @@ import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import { addUser } from '../utils/appSlice'
-import handleAuthStateChanges  from '../utils/handleAuthStateChanges'
+import handleAuthStateChanges from '../utils/handleAuthStateChanges'
 
 const paperStyle = { padding: 20, height: '70vh', width: 280, margin: "20px auto" }
 const avatarStyle = { backgroundColor: '#1bbd7e' }
 const btnstyle = { margin: '8px 0' }
 const errorStyle = { color: 'red' }
+const textBoxStyle = { margin: "5px auto" }
 
 const defaultValues: ISTATE = {
   login: true,
@@ -120,7 +121,7 @@ const Login: React.FC = () => {
 
   useEffect(() => {
     const unsubscribe = handleAuthStateChanges(navigate, dispatch, location);
-  
+
     return () => {
       unsubscribe();
     };
@@ -135,24 +136,24 @@ const Login: React.FC = () => {
     const provider = new GoogleAuthProvider();
 
     signInWithPopup(auth, provider)
-    .then((result) => {
-      console.log("result", result)
-      const user = result.user;
-      const { uid, email, displayName } = auth.currentUser;
-      if(user){
-        dispatch(
-          addUser({
-            uid: uid,
-            email: email,
-            displayName: displayName,
-          })
-        );
-        navigate(`/user/${user?.uid}`, { state: { login: login } });
-      }
-    })
-    .catch((error) => {
-      console.error(`Error signing in: ${error.message}`);
-    });
+      .then((result) => {
+        console.log("result", result)
+        const user = result.user;
+        const { uid, email, displayName } = auth.currentUser;
+        if (user) {
+          dispatch(
+            addUser({
+              uid: uid,
+              email: email,
+              displayName: displayName,
+            })
+          );
+          navigate(`/user/${user?.uid}`, { state: { login: login } });
+        }
+      })
+      .catch((error) => {
+        console.error(`Error signing in: ${error.message}`);
+      });
   }
 
 
@@ -173,6 +174,7 @@ const Login: React.FC = () => {
             fullWidth required
             name="name"
             value={name}
+            style={textBoxStyle}
             onChange={handleInputChange} />
         }
         <TextField
@@ -182,7 +184,9 @@ const Login: React.FC = () => {
           fullWidth required
           name="email"
           value={email}
-          onChange={handleInputChange} />
+          style={textBoxStyle}
+          onChange={handleInputChange}
+        />
         <TextField
           label='Password'
           placeholder='Enter password'
@@ -191,7 +195,9 @@ const Login: React.FC = () => {
           fullWidth required
           name="password"
           value={password}
-          onChange={handleInputChange} />
+          style={textBoxStyle}
+          onChange={handleInputChange}
+        />
         <Typography style={errorStyle}>{errorMessage}</Typography>
         <Button type='submit' color='primary' variant="contained" style={btnstyle} fullWidth onClick={handleSubmitForm}> {!login ? "Sign Up" : "Sign In"}</Button>
         <Typography >
